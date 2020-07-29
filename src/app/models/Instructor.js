@@ -6,7 +6,7 @@ module.exports = {
 
     const newInstructors = new Array();
 
-    db.query(`SELECT * FROM instructors`, function (err, results) {
+    db.query(`SELECT * FROM instructors ORDER BY name ASC`, function (err, results) {
       if (err) throw `Database error! ${err}`
       for (instructor of results.rows) {
         const formatedServices = instructor.services.split(',')
