@@ -1,8 +1,12 @@
 const { age, date } = require('../../lib/utils');
+const Member = require('../models/Member')
 
 module.exports = {
 	index(req, res) {
-		return res.render('members/index');
+
+		Member.all(function (members) {
+			return res.render('members/index', { members });
+		})
 	},
 	create(req, res) {
 		return res.render('members/create');
@@ -15,17 +19,31 @@ module.exports = {
 				return res.send('Please, fill all the fields!');
 			}
 		}
-		
-		return;
+
+		Member.create(req.body, function(member) {
+      return res.redirect(`/members/${member.id}`)
+		})
+
 	},
 	show(req, res) {
-		// req.query = is any query parameters.
-		// req.body = is the actual body of the request
-		// req.params = is route parameters. Can catch more than one
+		Member.find(req.params.id, function(member) {
+			if(!member) return res.send('Member not found')
 
-		return;
+			member.birth = date(member.birth).birthDay
+			
+			return res.render('members/show', { member });
+		})
+
 	},
 	edit(req, res) {
+		Member.find(req.params.id, function(member) {
+			if (!member) return res.send('Member not found!')
+
+			member.birth = date(member.birth).iso
+
+			return res.render('members/edit', { member })
+		})
+
 		return;
 	},
 	put(req, res) {
@@ -37,11 +55,16 @@ module.exports = {
 			}
 		}
 
-		let { avatar_url, birth, name, services, gender } = req.body;
+		Member.update(req.body, function() {
+			return res.redirect(`members/${req.body.id}`)
+		})
 
 		return;
 	},
 	delete(req, res) {
+		Member.delete(req.body.id, function() {
+			return res.redirect('/members')
+		})
 		return;
 	},
 }
