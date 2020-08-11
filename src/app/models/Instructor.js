@@ -9,10 +9,10 @@ module.exports = {
     db.query(`SELECT * FROM instructors ORDER BY name ASC`, function (err, results) {
       if (err) throw `Database error! ${err}`
       for (instructor of results.rows) {
-        const formatedServices = instructor.services.split(',')
+        const formattedServices = instructor.services.split(',')
         newInstructors.push({
           ...instructor,
-          services: formatedServices
+          services: formattedServices
         })
       }
       callback(newInstructors)
