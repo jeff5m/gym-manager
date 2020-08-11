@@ -1,24 +1,14 @@
 const db = require('../../config/db')
-const { date } = require('../../lib/utils')
 
 module.exports = {
   all(callback) {
-
-    const newInstructors = new Array();
-
     db.query(`SELECT * FROM instructors ORDER BY name ASC`, function (err, results) {
       if (err) throw `Database error! ${err}`
-      for (instructor of results.rows) {
-        const formattedServices = instructor.services.split(',')
-        newInstructors.push({
-          ...instructor,
-          services: formattedServices
-        })
-      }
-      callback(newInstructors)
+
+      callback(results.rows)
     })
   },
-  create(data, callback) {
+  create(values, callback) {
     const query = `
 			INSERT INTO instructors (
 				name,
@@ -30,16 +20,6 @@ module.exports = {
 			) VALUES ($1, $2, $3, $4, $5, $6)
 			RETURNING id
 		`
-
-    const values = [
-      data.name,
-      data.avatar_url,
-      data.gender,
-      data.services,
-      date(data.birth).iso,
-      date(Date.now()).iso
-    ]
-
     db.query(query, values, function (err, results) {
       if (err) throw `Database error! ${err}`
       callback(results.rows[0])
@@ -50,12 +30,12 @@ module.exports = {
       SELECT * 
       FROM instructors 
       WHERE id = $1`, [id], function (err, results) {
-        if (err) throw `Database error! ${err}`
-      
-        callback(results.rows[0])
+      if (err) throw `Database error! ${err}`
+
+      callback(results.rows[0])
     })
   },
-  update(data, callback) {
+  update(values, callback) {
     const query = `
       UPDATE instructors SET
         avatar_url=($1),
@@ -66,16 +46,7 @@ module.exports = {
       WHERE id = $6 
     ` // important establish WHERE for update only the row with the specific id
 
-    const values = [
-      data.avatar_url,
-      data.name,
-      date(data.birth).iso,
-      data.gender,
-      data.services,
-      data.id
-    ]
-
-    db.query(query, values, function(err, results) {
+    db.query(query, values, function (err, results) {
       if (err) throw `Database error! ${err}`
 
       callback()
@@ -85,10 +56,10 @@ module.exports = {
   delete(id, callback) {
     db.query(`
       DELETE FROM instructors
-      WHERE id = $1`, [id], function(err, results) {
-        if (err) throw `Database error! ${err}`
+      WHERE id = $1`, [id], function (err, results) {
+      if (err) throw `Database error! ${err}`
 
-        return callback()
-      })
+      return callback()
+    })
   }
 }

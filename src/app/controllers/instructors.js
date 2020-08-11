@@ -4,7 +4,18 @@ const Instructor = require('../models/Instructor')
 module.exports = {
 	index(req, res) {
 
-		Instructor.all(function (newInstructors) {
+		Instructor.all(function (instructors) {
+
+			const newInstructors = new Array();
+
+			for (instructor of instructors) {
+        const formattedServices = instructor.services.split(',')
+        newInstructors.push({
+          ...instructor,
+          services: formattedServices
+        })
+			}
+			
 			return res.render('instructors/index', { newInstructors });
 		})
 	},
@@ -20,7 +31,16 @@ module.exports = {
 			}
 		}
 
-		Instructor.create(req.body, function(instructor) {
+    const values = [
+      req.body.name,
+      req.body.avatar_url,
+      req.body.gender,
+      req.body.services,
+      date(req.body.birth).iso,
+      date(Date.now()).iso
+    ]
+
+		Instructor.create(values, function(instructor) {
       return res.redirect(`/instructors/${instructor.id}`)
 		})
 
@@ -57,7 +77,16 @@ module.exports = {
 			}
 		}
 
-		Instructor.update(req.body, function() {
+    const values = [
+      req.body.avatar_url,
+      req.body.name,
+      date(req.body.birth).iso,
+      req.body.gender,
+      req.body.services,
+      req.body.id
+		]
+		
+		Instructor.update(values, function() {
 			return res.redirect(`instructors/${req.body.id}`)
 		})
 

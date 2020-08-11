@@ -10,7 +10,7 @@ module.exports = {
       callback(results.rows)
     })
   },
-  create(data, callback) {
+  create(values, callback) {
     const query = `
 			INSERT INTO members (
 				name,
@@ -24,18 +24,6 @@ module.exports = {
 			) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 			RETURNING id
 		`
-
-    const values = [
-      data.name,
-      data.avatar_url,
-      data.gender,
-      data.email,
-      date(data.birth).iso,
-      data.blood,
-      data.weight,
-      data.height
-    ]
-
     db.query(query, values, function (err, results) {
       if (err) throw `Database error! ${err}`
       callback(results.rows[0])
@@ -51,7 +39,7 @@ module.exports = {
         callback(results.rows[0])
     })
   },
-  update(data, callback) {
+  update(values, callback) {
     const query = `
       UPDATE members SET
         avatar_url=($1),
@@ -64,18 +52,6 @@ module.exports = {
         height=($8)
       WHERE id = $9 
     ` // important establish WHERE for update only the row with the specific id
-
-    const values = [
-      data.avatar_url,
-      data.name,
-      date(data.birth).iso,
-      data.gender,
-      data.email,
-      data.blood,
-      data.weight,
-      data.height,
-      data.id
-    ]
 
     db.query(query, values, function(err, results) {
       if (err) throw `Database error! ${err}`
