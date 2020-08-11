@@ -86,7 +86,7 @@ header {
     animation-timing-function: ease-out;
     animation-fill-mode: forwards;The final property value is maintained after the animation completes.
     animation-delay: 1s;
-    animation-play-state: running; can be changed when user performe some action
+    animation-play-state: running; can be changed when user performer some action
     animation-iteration-count: 3;
     animation-direction: normal; */
 }
@@ -273,4 +273,35 @@ tbody tr td:last-child a,
 .table-container thead tr th:last-child,
 td:last-child {
     text-align: center;
+}
+
+/* === FILTERS === */
+
+.table-container .header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.table-container .header a{
+  margin: 0;
+  width: 120px;
+}
+
+.table-container .header form {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  grid-gap: 8px;
+  align-items: center;
+}
+
+.table-container .header form input {
+  border: 1px solid #eee;
+  padding: 4px 8px;
+  box-sizing: border-box;
+}
+
+.table-container .header form button[type="submit"] {
+  margin: 0;
 }
