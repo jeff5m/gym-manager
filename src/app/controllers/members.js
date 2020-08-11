@@ -9,7 +9,9 @@ module.exports = {
 		})
 	},
 	create(req, res) {
-		return res.render('members/create');
+		Member.instructorsSelectOptions(function(options) {
+			return res.render('members/create', { instructorOptions: options });
+		})
 	},
 	post(req, res) {
 		const keys = Object.keys(req.body); // return only object keys 
@@ -28,7 +30,8 @@ module.exports = {
       date(req.body.birth).iso,
       req.body.blood,
       req.body.weight,
-      req.body.height
+			req.body.height,
+			req.body.instructor
 		]
 		
 		Member.create(values, function(member) {
@@ -51,8 +54,10 @@ module.exports = {
 			if (!member) return res.send('Member not found!')
 
 			member.birth = date(member.birth).iso
-
-			return res.render('members/edit', { member })
+			
+			Member.instructorsSelectOptions(function(options) {
+				return res.render('members/edit', { member, instructorOptions: options });
+			})
 		})
 
 		return;
@@ -74,7 +79,8 @@ module.exports = {
       req.body.email,
       req.body.blood,
       req.body.weight,
-      req.body.height,
+			req.body.height,
+			req.body.instructor,
       req.body.id
 		]
 		
